@@ -1,0 +1,8 @@
+streamlit
+tvdatafeed
+pandas
+numpy
+matplotlib
+ta-lib
+fpdf
+swisseph
