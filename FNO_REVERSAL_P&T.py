@@ -11,7 +11,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from io import BytesIO
 from fpdf import FPDF
-import swisseph as swe
+#import swisseph as swe
+import pyswisseph as swe
+
 
 # -------------------------------------------------
 # GLOBAL PAGE CONFIG
