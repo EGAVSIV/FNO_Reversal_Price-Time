@@ -448,7 +448,7 @@ if mode == "Single Symbol":
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(
-        f"<div style='font-size:22px; background:#fff799; padding:6px; "
+        f"<div style='font-size:22px; background:#214275; padding:6px; "
         f"width:240px; border-radius:6px;'><b>Today Price: {last_close:.2f}</b></div>",
         unsafe_allow_html=True
     )
