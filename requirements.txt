@@ -6,4 +6,4 @@ numpy
 matplotlib
 ta-lib
 fpdf
-swisseph
+
