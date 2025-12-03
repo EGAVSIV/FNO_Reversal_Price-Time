@@ -73,7 +73,7 @@ def set_background(image_path: str):
 
 set_background("SMB2.jpg")
 
-st.title("FNO Reversal Levels & Reversal Time")
+st.title("FNO Reversal Levels & Reversal Time_By_Gaurav_S_Yadav")
 
 # -------------------------------------------------
 # TVDATAFEED INIT
