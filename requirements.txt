@@ -1,3 +1,4 @@
+pyswisseph
 streamlit
 tradingview-datafeed
 pandas
