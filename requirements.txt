@@ -1,5 +1,5 @@
 streamlit
-tvdatafeed
+tradingview-datafeed
 pandas
 numpy
 matplotlib
