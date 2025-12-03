@@ -18,7 +18,7 @@ import swisseph as swe
 # -------------------------------------------------
 # GLOBAL PAGE CONFIG
 # -------------------------------------------------
-st.set_page_config(page_title="FNO Reversal Levels & Reversal Time", layout="wide")
+st.set_page_config(page_title="FNO Reversal Levels & Reversal Time_By_Gaurav_Singh_Yadav", layout="wide")
 
 # -------------------------------------------------
 # BACKGROUND IMAGE
