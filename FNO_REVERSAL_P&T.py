@@ -42,7 +42,7 @@ if not st.session_state.authenticated:
 # -------------------------------------------------
 # GLOBAL PAGE CONFIG
 # -------------------------------------------------
-st.set_page_config(page_title="FNO Reversal Levels & Reversal Time_By_Gaurav_Singh_Yadav", layout="wide")
+st.set_page_config(page_title="FNO Reversal Levels & Reversal Time_By_Gaurav_Singh_Yadav", layout="wide",page_icon="🔁")
 
 # -------------------------------------------------
 # BACKGROUND IMAGE
