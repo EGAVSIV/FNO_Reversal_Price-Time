@@ -359,7 +359,7 @@ picked = st.date_input(
 
 # 🔔 INFO MESSAGE FOR LIMITED USERS
 if st.session_state.username not in FUTURE_ALLOWED_USERS:
-    st.info("ℹ️ Future date selection is limited to Tomorrow only for your login.")
+    st.info("ℹ️ Future date selection is limited to Tomorrow+1 only for your login.")
 
 with c2:
     if st.button("Today"):
