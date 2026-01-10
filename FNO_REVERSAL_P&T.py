@@ -15,13 +15,27 @@ from fpdf import FPDF
 import swisseph as swe
 import hashlib
 
+
+# ---------------- PASSWORD HASH ----------------
 def hash_pwd(pwd):
     return hashlib.sha256(pwd.encode()).hexdigest()
 
+# ---------------- USERS ----------------
 USERS = st.secrets["users"]
 
+# 🔐 Users allowed to select ANY future date
+FUTURE_ALLOWED_USERS = {
+    "admin",
+    "gaurav",
+    "premium"
+}
+
+# ---------------- SESSION INIT ----------------
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+
+if "username" not in st.session_state:
+    st.session_state.username = None
 
 if not st.session_state.authenticated:
     st.title("🔐 Login Required")
@@ -32,11 +46,14 @@ if not st.session_state.authenticated:
     if st.button("Login"):
         if u in USERS and hash_pwd(p) == USERS[u]:
             st.session_state.authenticated = True
+            st.session_state.username = u   # ✅ STORE USERNAME
             st.rerun()
         else:
             st.error("Invalid credentials")
 
     st.stop()
+
+
 
 
 # -------------------------------------------------
@@ -323,7 +340,26 @@ st.header("🔮 FNO Reversal Time (Astro)")
 
 c1, c2, c3 = st.columns(3)
 with c1:
-    picked = st.date_input("Select Date", dt.date.today())
+    today = dt.date.today()
+tomorrow = today + dt.timedelta(days=1)
+
+# Decide max selectable date
+if st.session_state.username in FUTURE_ALLOWED_USERS:
+    max_date = None              # Unlimited future dates
+else:
+    max_date = tomorrow          # Only Day +1 allowed
+
+picked = st.date_input(
+    "Select Date",
+    value=today,
+    min_value=None,              # Past dates allowed
+    max_value=max_date           # Conditional future limit
+)
+
+# 🔔 INFO MESSAGE FOR LIMITED USERS
+if st.session_state.username not in FUTURE_ALLOWED_USERS:
+    st.info("ℹ️ Future date selection is limited to Tomorrow only for your login.")
+
 with c2:
     if st.button("Today"):
         picked = dt.date.today()
