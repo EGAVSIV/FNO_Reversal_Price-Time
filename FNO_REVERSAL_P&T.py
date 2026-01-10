@@ -593,13 +593,13 @@ else:
             "text/csv"
         )
     else:
-        st.write("No data available.")
+        st.write("No data available.")    
 
 
 st.markdown("""
 ---
 **Designed by:-  
-Gaurav Singh Yadav**   
+*Gaurav Singh Yadav*   
 🩷💛🩵💙🩶💜🤍🤎💖  Built With Love 🫶  
 Energy | Commodity | Quant Intelligence 📶  
 📱 +91-8003994518 〽️   
