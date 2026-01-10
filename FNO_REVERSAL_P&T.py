@@ -348,7 +348,7 @@ tomorrow = today + dt.timedelta(days=1)
 if st.session_state.username in FUTURE_ALLOWED_USERS:
     max_date = None              # Unlimited future dates
 else:
-    max_date = tomorrow          # Only Day +1 allowed
+    max_date = today + dt.timedelta(days=2)   # Today + 2         # Only Day +1 allowed
 
 picked = st.date_input(
     "Select Date",
