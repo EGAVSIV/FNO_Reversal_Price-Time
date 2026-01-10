@@ -28,7 +28,8 @@ FUTURE_ALLOWED_USERS = {
     "admin",
     "gaurav",
     "premium",
-    "EGAVSIV"
+    "EGAVSIV",
+    "DIPTI"
 }
 
 # ---------------- SESSION INIT ----------------
