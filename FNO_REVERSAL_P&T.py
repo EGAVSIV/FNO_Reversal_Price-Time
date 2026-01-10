@@ -27,7 +27,8 @@ USERS = st.secrets["users"]
 FUTURE_ALLOWED_USERS = {
     "admin",
     "gaurav",
-    "premium"
+    "premium",
+    "EGAVSIV"
 }
 
 # ---------------- SESSION INIT ----------------
