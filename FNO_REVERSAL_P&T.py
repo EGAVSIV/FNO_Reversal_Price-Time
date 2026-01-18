@@ -65,7 +65,7 @@ st.set_page_config(page_title="FNO Reversal Levels & Reversal Time_By_Gaurav_Sin
 col_logo, col_ticker = st.columns([0.22, 0.78])
 
 with col_logo:
-    st.image("Assets/sgy2.png", width=220)    
+    st.image("Assets/sgy1.png", width=220)    
 
 
 # -------------------------------------------------
