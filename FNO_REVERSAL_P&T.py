@@ -14,6 +14,27 @@ from fpdf import FPDF
 #import pyswisseph as swe
 import swisseph as swe
 import hashlib
+import base64
+
+def set_bg_image(image_path: str):
+    with open(image_path, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/png;base64,{encoded}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 
 # ---------------- PASSWORD HASH ----------------
@@ -66,6 +87,8 @@ col_logo, col_ticker = st.columns([0.22, 0.78])
 
 with col_logo:
     st.image("Assets/sgy1.png", width=220)    
+
+set_bg_image("Assets/BG11.png")
 
 
 # -------------------------------------------------
