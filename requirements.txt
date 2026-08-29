@@ -9,11 +9,11 @@ tradingview-datafeed
 #fpdf
 #swisseph
 streamlit
+pyswisseph
 #tvDatafeed
 pandas
 numpy
 TA-Lib
-pyswisseph
 fpdf
 matplotlib
 
