@@ -8,4 +8,12 @@ matplotlib
 ta-lib
 fpdf
 swisseph
+streamlit
+tvDatafeed
+pandas
+numpy
+TA-Lib
+pyswisseph
+fpdf
+matplotlib
 
