@@ -1,19 +1,11 @@
-#swisseph
-#pyswisseph
-#streamlit
-tradingview-datafeed
-#pandas
-#numpy
-#matplotlib
-#ta-lib
-#fpdf
-#swisseph
-streamlit
+swisseph
 pyswisseph
-tvDatafeed
+streamlit
+tradingview-datafeed
 pandas
 numpy
-pandas-ta
-fpdf
 matplotlib
+ta-lib
+fpdf
+swisseph
 
