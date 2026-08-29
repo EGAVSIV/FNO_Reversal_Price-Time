@@ -13,7 +13,7 @@ pyswisseph
 tvDatafeed
 pandas
 numpy
-TA-Lib
+pandas-ta
 fpdf
 matplotlib
 
