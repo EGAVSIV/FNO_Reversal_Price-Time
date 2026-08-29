@@ -1,7 +1,7 @@
 #swisseph
 #pyswisseph
 #streamlit
-#tradingview-datafeed
+tradingview-datafeed
 #pandas
 #numpy
 #matplotlib
@@ -9,7 +9,7 @@
 #fpdf
 #swisseph
 streamlit
-tvDatafeed
+#tvDatafeed
 pandas
 numpy
 TA-Lib
