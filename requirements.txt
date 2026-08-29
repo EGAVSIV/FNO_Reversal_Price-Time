@@ -10,7 +10,7 @@ tradingview-datafeed
 #swisseph
 streamlit
 pyswisseph
-#tvDatafeed
+tvDatafeed
 pandas
 numpy
 TA-Lib
