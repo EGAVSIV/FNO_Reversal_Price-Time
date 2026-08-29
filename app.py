@@ -4,16 +4,42 @@ import pathlib
 import pandas as pd
 import numpy as np
 import talib as ta
-from datetime import datetime, time
 import datetime as dt
 import swisseph as swe
 from tvDatafeed import TvDatafeed, Interval
-import streamlit.components.v1 as components
+import base64
 
 # ---------------- STREAMLIT INIT ----------------
 st.set_page_config(page_title="FNO Reversal Dashboard", layout="wide", page_icon="🔮")
 
-# TVDatafeed Initialization
+# Secret Authentication Handling
+USERS = st.secrets.get("users", {"admin": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"}) # fallback for testing
+
+# Background setting helper
+def set_bg_image(image_path: str):
+    try:
+        with open(image_path, "rb") as f:
+            encoded = base64.b64encode(f.read()).decode()
+        st.markdown(
+            f"""
+            <style>
+            .stApp {{
+                background-image: url("data:image/png;base64,{encoded}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+    except FileNotFoundError:
+        pass
+
+set_bg_image("Assets/BG11.png")
+
+# TVDatafeed Connection
 @st.cache_resource
 def get_tv_connection():
     return TvDatafeed()
@@ -120,17 +146,14 @@ def price_cycles(close_price, steps=[30, 60, 90, 120, 150]):
         sup.append(down)
     return res, sup
 
-# ---------------- STREAMLIT SIDEBAR CONTROLS ----------------
+# ---------------- CONTROLS ----------------
 st.sidebar.header("🕹️ Dashboard Controls")
 selected_date = st.sidebar.date_input("Select Astro Date", dt.date.today())
 selected_symbol = st.sidebar.selectbox("Select Stock Symbol", SYMBOLS)
 preset_steps = st.sidebar.selectbox("Steps Preset", [[30,60,90,120,150], [3,6,9,12,15], [0.3,0.6,0.9,1.2,1.5]])
 
-# ---------------- RUN PYTHON CALCULATIONS ----------------
-# 1. Astro Calculations
+# ---------------- RUN CALCULATIONS ----------------
 nak_name, nak_bias, astro_events = scan_astro(selected_date)
-
-# 2. Stock Price Calculations
 stock_info = get_stock_data(selected_symbol)
 
 if stock_info:
@@ -138,43 +161,32 @@ if stock_info:
     atr_pct = (atr_val / d_close) * 100
     r_raw, s_raw = price_cycles(w_close, steps=preset_steps)
     
-    # Reclassification logic
     new_r = [val for val in r_raw if val > d_close]
     new_s = [val for val in r_raw if val <= d_close] + s_raw
     
-    # Fill to 5 elements
     new_r = (new_r + [None]*5)[:5]
     new_s = (new_s + [None]*5)[:5]
 
-    # 3. Assemble JSON Payload for JS Dashboard UI
     dashboard_payload = {
-        "astro": {
-            "nakshatra": nak_name,
-            "bias": nak_bias,
-            "events": astro_events
-        },
+        "astro": {"nakshatra": nak_name, "bias": nak_bias, "events": astro_events},
         "sr": {
-            "symbol": selected_symbol,
-            "weekly_close": w_close,
-            "last_close": d_close,
-            "atr": atr_val,
-            "atr_pct": atr_pct,
-            "resistance": new_r,
-            "support": new_s
+            "symbol": selected_symbol, "weekly_close": w_close, "last_close": d_close,
+            "atr": atr_val, "atr_pct": atr_pct, "resistance": new_r, "support": new_s
         }
     }
 
-    # 4. Inject JSON Payload into HTML Template
+    # Load HTML File safely
     html_file = pathlib.Path(__file__).parent / "dashboard.html"
-    with open(html_file, "r", encoding="utf-8") as f:
-        html_content = f.read()
+    try:
+        with open(html_file, "r", encoding="utf-8") as f:
+            html_content = f.read()
 
-    # Inject calculated data directly into window.DASHBOARD_DATA global scope
-    injected_js = f"<script>window.DASHBOARD_DATA = {json.dumps(dashboard_payload)};</script>"
-    final_html = injected_js + html_content
+        injected_js = f"<script>window.DASHBOARD_DATA = {json.dumps(dashboard_payload)};</script>"
+        final_html = injected_js + html_content
 
-    # Render inside Streamlit page layout
-    components.html(final_html, height=800, scrolling=True)
-
+        # Render static HTML with JavaScript execution allowed
+        st.html(final_html, unsafe_allow_javascript=True)
+    except FileNotFoundError:
+        st.error("`dashboard.html` not found in repository root!")
 else:
     st.error("Failed to fetch market data for selected symbol.")
