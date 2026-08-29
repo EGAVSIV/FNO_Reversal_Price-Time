@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FNO Reversal Dashboard</title>
+  <style>
+    :root {
+      --bg-color: #0b0e14;
+      --card-bg: #151a23;
+      --accent-bull: #00e676;
+      --accent-bear: #ff5252;
+      --accent-warn: #ffd700;
+      --text-main: #e0e6ed;
+      --text-muted: #8a99ad;
+      --border-color: #232d3f;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 16px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: inline-block;
+    }
+    .badge-bullish { background: rgba(0, 230, 118, 0.15); color: var(--accent-bull); border: 1px solid var(--accent-bull); }
+    .badge-bearish { background: rgba(255, 82, 82, 0.15); color: var(--accent-bear); border: 1px solid var(--accent-bear); }
+    .badge-neutral { background: rgba(255, 215, 0, 0.15); color: var(--accent-warn); border: 1px solid var(--accent-warn); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .level-r { color: #ff8a80; font-weight: 600; }
+    .level-s { color: #b9f6ca; font-weight: 600; }
+    .level-price { color: #ffd700; font-weight: 700; background: rgba(255,215,0,0.1); }
+
+    .metric-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .metric-box {
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .metric-label { font-size: 0.75rem; color: var(--text-muted); }
+    .metric-val { font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-grid">
+    <!-- Section 1: Astro Reversal Time Card -->
+    <div class="card">
+      <div class="card-title">
+        <span>🔮 Intraday Astro Events</span>
+      </div>
+      
+      <div style="margin-bottom: 16px;">
+        <span id="nak-name" style="font-size: 1.1rem; font-weight: bold;">--</span>
+        <div id="nak-badge" class="badge badge-neutral" style="margin-left: 10px;">--</div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Event</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody id="astro-events-table">
+          <tr><td colspan="3" style="text-align:center;">Loading Astro Data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section 2: Price Cycle SR Levels Card -->
+    <div class="card">
+      <div class="card-title">
+        <span>🎯 Support & Resistance Levels</span>
+        <span id="symbol-header" style="margin-left: auto; color: #40c4ff;">--</span>
+      </div>
+
+      <div class="metric-container">
+        <div class="metric-box">
+          <div class="metric-label">Weekly Close</div>
+          <div class="metric-val" id="metric-weekly">--</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Last Close</div>
+          <div class="metric-val" id="metric-close">--</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">ATR(10) / ATR%</div>
+          <div class="metric-val" id="metric-atr">--</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Level Type</th>
+            <th>Calculated Price</th>
+          </tr>
+        </thead>
+        <tbody id="sr-levels-table">
+          <tr><td colspan="2" style="text-align:center;">Select a Symbol in Python controls...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Receive JSON data dynamically injected from Streamlit
+    function renderDashboard(data) {
+      if (!data) return;
+
+      // 1. Render Astro Data
+      if (data.astro) {
+        document.getElementById('nak-name').innerText = "Moon Nakshatra: " + data.astro.nakshatra;
+        const badge = document.getElementById('nak-badge');
+        badge.innerText = "Bias: " + data.astro.bias;
+        
+        const biasLower = data.astro.bias.toLowerCase();
+        if (biasLower.includes('bull') || biasLower.includes('strength')) {
+          badge.className = "badge badge-bullish";
+        } else if (biasLower.includes('reversal') || biasLower.includes('risk')) {
+          badge.className = "badge badge-bearish";
+        } else {
+          badge.className = "badge badge-neutral";
+        }
+
+        const astroTbody = document.getElementById('astro-events-table');
+        if (data.astro.events && data.astro.events.length > 0) {
+          astroTbody.innerHTML = data.astro.events.map(ev => `
+            <tr>
+              <td><b>${ev.Time}</b></td>
+              <td>${ev.Event}</td>
+              <td>${ev.Detail}</td>
+            </tr>
+          `).join('');
+        } else {
+          astroTbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No events detected</td></tr>`;
+        }
+      }
+
+      // 2. Render SR Levels
+      if (data.sr) {
+        document.getElementById('symbol-header').innerText = data.sr.symbol;
+        document.getElementById('metric-weekly').innerText = data.sr.weekly_close.toFixed(2);
+        document.getElementById('metric-close').innerText = data.sr.last_close.toFixed(2);
+        document.getElementById('metric-atr').innerText = `${data.sr.atr.toFixed(2)} (${data.sr.atr_pct.toFixed(2)}%)`;
+
+        const srTbody = document.getElementById('sr-levels-table');
+        let html = '';
+
+        // Resistance Levels
+        data.sr.resistance.forEach((val, i) => {
+          html += `<tr class="level-r"><td>Resistance R${i+1}</td><td>${val ? val.toFixed(2) : '---'}</td></tr>`;
+        });
+
+        // Current Price Highlight
+        html += `<tr class="level-price"><td><b>Today Price (Close)</b></td><td><b>${data.sr.last_close.toFixed(2)}</b></td></tr>`;
+
+        // Support Levels
+        data.sr.support.forEach((val, i) => {
+          html += `<tr class="level-s"><td>Support S${i+1}</td><td>${val ? val.toFixed(2) : '---'}</td></tr>`;
+        });
+
+        srTbody.innerHTML = html;
+      }
+    }
+
+    // Initialize rendering from window object injected by Python Streamlit script
+    if (window.DASHBOARD_DATA) {
+      renderDashboard(window.DASHBOARD_DATA);
+    }
+  </script>
+</body>
+</html>
