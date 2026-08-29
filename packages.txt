@@ -1,3 +1,4 @@
-libstdc++6
 build-essential
 python3-dev
+libstdc++6
+ta-lib
